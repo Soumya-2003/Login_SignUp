@@ -4,14 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/signup.css">
 </head>
 <body>
-    <h2>Sign Up</h2>
+    <div class="box">
+        <span class="borderLine"></span>
+        <form action="/signup" method="post">
+            <h2>Create Account</h2>
+        
+        <div class="inputBox">
+            <input type="text" name="name" required="required"><span>Username</span>
+            <i></i>
+        </div>
+        <div class="inputBox">
+            <input type="email" name="email" required="required"><span>Email</span>
+            <i></i>
+        </div>
 
-    <form action="/signup" method="post">
-        <input type="text" name="name" placeholder="Name">
-        <input type="password" name="password" placeholder="Password"> 
-        <input type="submit">
-    </form>
+        <div class="inputBox">
+            <input type="password" name="password" required="required"><span>Password</span>
+            <i></i>
+        </div>
+        <div class="links">
+            <a href=""> </a>
+            <a href="/">Sign In</a>
+        </div>
+        <input type="submit" value="Create">
+        </form>
+        
+    </div>
+    
+
+
+    <!-- <a href="/signup"> Make a new Account</a> -->
 </body>
 </html>
