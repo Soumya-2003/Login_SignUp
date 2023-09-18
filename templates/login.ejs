@@ -3,17 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/login.css">
 </head>
 <body>
-    <h2>Log In</h2>
+    
+    <div class="box">
+        <span class="borderLine"></span>
+        <form action="/login" method="post">
+            <h2>Sign in</h2>
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="error-message">
+                    <%= messages.error[0] %>
+                </div>
+                <% } %>
+    
+                <% if (messages.success && messages.success.length > 0) { %>
+                <div class="success-message">
+                    <%= messages.success[0] %>
+                </div>
+                <% } %>
 
-    <form action="/login" method="post">
-        <input type="text" name="name" placeholder="Name">
-        <input type="password" name="password" placeholder="Password"> 
-        <input type="submit">
-    </form>
 
-    <a href="/signup"> Make a new Account</a>
+
+
+        <div class="inputBox">
+            <input type="text" name="name" required="required"><span>Username</span>
+            <i></i>
+        </div>
+        <div class="inputBox">
+            <input type="password" name="password" required="required"><span>Password</span>
+            <i></i>
+        </div>
+        <div class="links">
+            <a href="#">Forgot Password </a>
+            <a href="/signup">Sign Up</a>
+        </div>
+        <input type="submit" value="Login">
+        </form>
+        
+    </div>
+    
+
+
+    <!-- <a href="/signup"> Make a new Account</a> -->
 </body>
 </html>
