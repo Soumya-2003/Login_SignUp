@@ -5,6 +5,8 @@ const ejs = require("ejs");
 const session = require('express-session');
 const flash = require('express-flash');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'qwerty';
 
 
 const UserCollection = require("./mongodb");
@@ -30,6 +32,10 @@ app.set("views" , templatePath);
 app.use(express.urlencoded({extended:false}));
 const port = 3000;
 
+
+
+
+
 app.get('/', (req, res) => {
     res.render("login.ejs",{messages:req.flash()});
 })
@@ -45,37 +51,55 @@ app.post("/signup" , async(req,res)=>{
         password : req.body.password
     }
 
-    await UserCollection.insertMany([data])
-
-    res.redirect("/");
-})
-
-app.post("/login" , async(req,res)=>{
     try{
-        const check = await UserCollection.findOne({name:req.body.name});
+        // Insert user data into the database
+        await UserCollection.insertMany([data]);
+
+        // Generate a JWT token
+        const token = jwt.sign({ userId: data._id},JWT_SECRET,{
+            expiresIn: '1h' //Token expires in 1 hour
+        });
+        res.cookie('token',token) //Store the token in a cookie for subsequent requests
+        res.redirect("/");
+    }
+    catch (error){
+        console.error("Error during signup:",error);
+        res.status(500).send("Internal Server Error");
+    }
+    
+});
+
+app.post("/login", async (req, res) => {
+    try {
+        const check = await UserCollection.findOne({ name: req.body.name });
+
         if (!check) {
             // User not found
-            req.flash("error","User Not Found!");
+            req.flash("error", "User Not Found!");
             return res.render("login.ejs", { messages: req.flash() });
         }
-        
-        if(check.password === req.body.password){
-            // Successful login, render the home page
-            req.flash("success","Successfully login");
-           return res.render("home.ejs");
-           
-        }
-        else{
+
+        if (check.password === req.body.password) {
+            // Successful login, generate a JWT token
+            const token = jwt.sign({ userId: check._id }, JWT_SECRET, {
+                expiresIn: '1h' // Token expires in 1 hour
+            });
+
+            res.cookie('token', token); // Store the token in a cookie for subsequent requests
+
+            req.flash("success", "Successfully login");
+            return res.render("home.ejs");
+        } else {
             // Incorrect password
             req.flash("error", "Wrong Password");
             return res.render("login.ejs", { messages: req.flash() });
         }
-    }
-    catch (error){
+    } catch (error) {
         console.error("Error during login:", error);
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 
 app.listen(port, () => {console.log(`Example app listening on port ${port}!`)}) ;
